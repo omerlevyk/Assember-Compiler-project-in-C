@@ -2,9 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "secondRun.h" 
 
-
+void closeAllSystems(LineNode* head, LineNode* binHead);
 bool addSymbolAsEntry(LineNode* head, LineNode* current);
 int binaryCodingProcess(LineNode* head, LineNode* current, LineNode* currentBinary);
 
@@ -16,11 +17,12 @@ LineNode* createAllBinHeadNode();
 
 void decimalToBinary(char* binNum, int num, int length);
 void negIntToBin(char* binNum, int num, int length);
-char convertToBase32(int num);
+char BinCharToBase32(char* binaryNum);
+char intToBase32(int decimalNum);
 char getMarkFor32Base(int num);
 
 
-bool is_success =TRUE;
+bool is_success =true;
 
 LineNode* secondRun(LineNode* head) {
     IC = 0; /* line 1*/
@@ -32,7 +34,7 @@ LineNode* secondRun(LineNode* head) {
     while (NULL != current) { /* line 2*/
         /* line 3*/
         if (0 != isDataStorage(current)) { /* line 3 + 4*/
-            if (TRUE == isEntryGuidance(current)) { /* line 5*/
+            if (true == isEntryGuidance(current)) { /* line 5*/
                 is_success = addSymbolAsEntry(head, current); /* line 6*/
             } else {
                 L = binaryCodingProcess(head, current, currentBinary); /* line 7*/
@@ -45,21 +47,37 @@ LineNode* secondRun(LineNode* head) {
         currentBinary = currentBinary -> Next; /* line 9*/
     }
 
-    if (FALSE == is_success) { /* line 10*/
+    if (false == is_success) { /* line 10*/
         return NULL;
     }
+    return binHead;
+}
+
+void closeAllSystems(LineNode* head, LineNode* binHead) {
+    DeleteAllLines(head);
+    DeleteAllLines(binHead);
+
+    symbolEntryNode* currentSymbol = symbolTableHead;
+    symbolEntryNode* NextSymbol = symbolTableHead;
+
+    while (NULL != currentSymbol) {
+        NextSymbol = currentSymbol -> Next;
+        free(currentSymbol);
+        currentSymbol = NextSymbol;
+    }
+    symbolTableHead = NULL;
 }
 
 bool addSymbolAsEntry(LineNode* head, LineNode* current) {
     symbolEntryNode* currentSymbol = symbolTableHead;
-    char keyWord[] = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
-    bool flag =FALSE;
+    char* keyWord = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
+    bool flag =false;
     getWord(current, 2, keyWord);
     
     flag = addToTable(head, current, 2);
     while ((NULL != currentSymbol -> Next)) {
         currentSymbol -> Type = entry;
-        currentSymbol -> Address = 0; //??
+        currentSymbol -> Address = 0;
     }
 
     free(keyWord);
@@ -74,30 +92,30 @@ int binaryCodingProcess(LineNode* head, LineNode* current, LineNode* currentBina
     LineNode* operandCurrentBinary;
     int wordCount = 0;
     int tempOpCodeNum = getOpCodeInTable(head, current);
-    if (TRUE == isSymbol(current)) {
+    if (true == isSymbol(current)) {
         wordLoc++;
     }
     if (0 != tempOpCodeNum) {
         /* enter opCode*/
         operandCurrentBinary = currentBinary -> Next;
-        char* binNum[] = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
+        char* binNum = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
         decimalToBinary(binNum, getOpCodeInTable(head, current) - 1, OPCODE_BIT_SIZE); 
         strcat(currentBinary -> Content, binNum);
         free(binNum);
         wordLoc++;
 
-        if (15 == tempOpCodeNum || 16 == tempOpCodeNum) { //zero operand
+        if (15 == tempOpCodeNum || 16 == tempOpCodeNum) { /* zero operand*/
             strcat(currentBinary -> Content, "0000");
             wordCount = 2;
         }
-        if (5 <= tempOpCodeNum && 14 >= tempOpCodeNum && 7 != tempOpCodeNum) {//one operand
+        if (5 <= tempOpCodeNum && 14 >= tempOpCodeNum && 7 != tempOpCodeNum) {/* one operand*/
             strcat(currentBinary -> Content, "00");
             wordCount = 1;
         }
 
         /*enter operands*/
         while (2 > wordCount) { /* scan each word in the line*/
-            char* keyWord[] = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
+            char* keyWord = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
             getWord(current, wordLoc, keyWord);
             
             if (0 != getRegister(keyWord)) { /* found a register*/
@@ -105,7 +123,7 @@ int binaryCodingProcess(LineNode* head, LineNode* current, LineNode* currentBina
                 if (1 == wordCount) {
                     strcat(operandCurrentBinary -> Content, "0000");
                 }
-                char* binNum[] = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
+                char* binNum = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
                 decimalToBinary(binNum, getRegister(keyWord) - 1, OPCODE_BIT_SIZE);
                 strcat(operandCurrentBinary -> Content, binNum);
                 free(binNum);
@@ -118,23 +136,23 @@ int binaryCodingProcess(LineNode* head, LineNode* current, LineNode* currentBina
                 strcat(operandCurrentBinary -> Content, "000000");
             }
 
-            if (2 == isRegisterOrSymbol(keyWord)) { // found a symbol with a dot
+            if (2 == isRegisterOrSymbol(keyWord)) { /* found a symbol with a dot*/
                 strcat(currentBinary -> Content, "10");
                 char tempKeyWord;
                 strcpy(tempKeyWord, keyWord);
                 tempKeyWord = strtok(keyWord, ".");
 
-                char* binNum[] = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
-                decimalToBinary(binNum, getSymbolAddress(tempKeyWord), SYMBOL_BIT_SIZE);
-                strcat(operandCurrentBinary -> Content, binNum);
-                free(binNum);
+                char* binNum1 = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
+                decimalToBinary(binNum1, getLabelAddress(tempKeyWord), SYMBOL_BIT_SIZE);
+                strcat(operandCurrentBinary -> Content, binNum1);
+                free(binNum1);
                 strcat(operandCurrentBinary -> Content, "10");
                 
                 operandCurrentBinary = operandCurrentBinary -> Next;
-                char* binNum[] = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
-                decimalToBinary(binNum, (int)binNum[sizeof(binNum) -1], SYMBOL_BIT_SIZE);
-                strcat(operandCurrentBinary -> Content, binNum);
-                free(binNum);
+                char* binNum2 = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
+                decimalToBinary(binNum2, (int)binNum2[sizeof(binNum2) -1], SYMBOL_BIT_SIZE);
+                strcat(operandCurrentBinary -> Content, binNum2);
+                free(binNum2);
                 strcat(operandCurrentBinary -> Content, "00");
                 returnVal++;
             }
@@ -143,8 +161,8 @@ int binaryCodingProcess(LineNode* head, LineNode* current, LineNode* currentBina
                 if (1 == getLabelType(keyWord)) {
                     strcat(operandCurrentBinary -> Content, "0000000001");
                 } else if (2 == getLabelType(keyWord)) {
-                    char* binNum[] = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
-                    decimalToBinary(binNum, getSymbolAddress(keyWord), SYMBOL_BIT_SIZE);
+                    char* binNum = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
+                    decimalToBinary(binNum, getLabelAddress(keyWord), SYMBOL_BIT_SIZE);
                     strcat(operandCurrentBinary -> Content, binNum);
                     free(binNum);
                     strcat(operandCurrentBinary -> Content, "10");
@@ -155,7 +173,7 @@ int binaryCodingProcess(LineNode* head, LineNode* current, LineNode* currentBina
                 char tempKeyWord;
                 strcat(currentBinary -> Content, "00");
                 tempKeyWord = strtok(keyWord, "#");
-                char* tempNumWord[] = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
+                char* tempNumWord = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
                 negIntToBin(tempNumWord, (int)tempKeyWord, DATA_BIT_SIZE);
                 strcat(operandCurrentBinary -> Content, tempNumWord);
                 strcat(operandCurrentBinary -> Content, "00");
@@ -172,10 +190,10 @@ int binaryCodingProcess(LineNode* head, LineNode* current, LineNode* currentBina
         }
     } else {
         returnVal = 0;
-        bool negFlag =FALSE, commaFlag =FALSE;
+        bool negFlag =false, commaFlag =false;
         int i, j;
         
-        char* keyWord[] = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
+        char* keyWord = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
         getLineFromPoint(current, ++wordLoc, keyWord);
 
         for (i = 0; i < sizeof(keyWord); i++) {
@@ -183,10 +201,10 @@ int binaryCodingProcess(LineNode* head, LineNode* current, LineNode* currentBina
                 char tempChar = keyWord[i];
                 if (0 == strcmp(keyWord[i], '-')) {
                     tempChar = keyWord[++i];
-                    negFlag =TRUE;
+                    negFlag =true;
                 }
                 if (0 == strcmp(keyWord[i], '"')) {
-                    commaFlag =TRUE;
+                    commaFlag =true;
                     j = i + 1;
                 }
                 while (0 != strcmp(keyWord[i+1], ",") || sizeof(keyWord)-1 == i) {
@@ -194,21 +212,21 @@ int binaryCodingProcess(LineNode* head, LineNode* current, LineNode* currentBina
                 }
 
                 if (10 > (int)keyWord[i]) { /* found a number*/
-                    char* tempKeyWord[] = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
+                    char* tempKeyWord = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
                     decimalToBinary(tempKeyWord, (int)tempChar, DATA_BIT_SIZE);
                     strcat(operandCurrentBinary -> Content, tempKeyWord);
                     free(tempKeyWord);
                 }
-                if (TRUE == negFlag) { /* found a negative number*/
+                if (true == negFlag) { /* found a negative number*/
                     tempChar = strtok(tempChar, "-");
-                    char* tempKeyWord[] = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
+                    char* tempKeyWord = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
                     negIntToBin(tempKeyWord, (int)tempChar, DATA_BIT_SIZE);
                     strcat(operandCurrentBinary -> Content, tempKeyWord);
                     free(tempKeyWord);
                 }
-                if (TRUE == commaFlag) { /* found a string*/
+                if (true == commaFlag) { /* found a string*/
                     while (0 != strcmp(keyWord[i], '"')) {
-                        char* tempKeyWord[] = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
+                        char* tempKeyWord = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
                         negIntToBin(tempKeyWord, (int)keyWord[j], DATA_BIT_SIZE);
                         strcat(operandCurrentBinary -> Content, tempKeyWord);
                         free(tempKeyWord);
@@ -254,7 +272,7 @@ int getLabelAddress(char* keyWord) {
     return -1;       
 }
 
-LineNode* createAllBinHeadNode() { //??
+LineNode* createAllBinHeadNode() { /* edit at home*/
     LineNode* binHead = (LineNode*)malloc(sizeof(LineNode));
     int i;
     for (i = 0; i <= DC; i++) {
@@ -284,122 +302,38 @@ void negIntToBin(char* binNum, int num, int length) {
     return;
 }
 
-char convertToBase32(int num) {
-    int firstLoc, secondLoc;
-    char firstCh, secondCh;
-    if (31 >= num) {
-        firstLoc = 0;
-        secondLoc = num;
+char BinCharToBase32(char* binaryNum) {
+    int i, j = 1, decimalNum = 0;
+    int leftNum, rightNum;
+    char returnVal;
+    for(i = sizeof(binaryNum) -1; i >= 0; i--) {
+        if (strcmp(binaryNum[i], "1")) {
+            decimalNum += j;
+        }
+        j *= 2;
     }
-    while (32 <= secondLoc) {
-        secondLoc = num/32;
-        firstLoc++;
-    }
-    
-    firstCh = convertToBase32(firstLoc);
-    secondCh = convertToBase32(secondLoc);
-    strcat(firstCh, secondCh);
+    returnVal = intToBase32 (decimalNum);
+    return returnVal;
+    /*leftNum = decimalNum >> 5;
+    rightNum = decimalNum - leftNum << 5;
 
-    return firstCh;
+    char leftCh = getMarkFor32Base(leftNum);
+    char rightCh = getMarkFor32Base(rightNum);
+    strcat(leftCh, rightCh);
+
+    return leftCh;*/
 }
 
-char getMarkFor32Base(int num) {
-    switch (num) {
-        case 0:
-            return "!";
-            break;
-        case 1:
-            return "@";
-            break;
-        case 2:
-            return "#";
-            break;
-        case 3:
-            return "$";
-            break;
-        case 4:
-            return "%";
-            break;
-        case 5:
-            return "^";
-            break;
-        case 6:
-            return "&";
-            break;
-        case 7:
-            return "*";
-            break;
-        case 8:
-            return "<";
-            break;
-        case 9:
-            return ">";
-            break;
-        case 10:
-            return "a";
-            break;
-        case 11:
-            return "b";
-            break;
-        case 12:
-            return "c";
-            break;
-        case 13:
-            return "d";
-            break;
-        case 14:
-            return "e";
-            break;
-        case 15:
-            return "f";
-            break;
-        case 16:
-            return "g";
-            break;
-        case 17:
-            return "h";
-            break;
-        case 18:
-            return "i";
-            break;
-        case 19:
-            return "j";
-            break;
-        case 20:
-            return "k";
-            break;
-        case 21:
-            return "l";
-            break;
-        case 22:
-            return "m";
-            break;
-        case 23:
-            return "n";
-            break;
-        case 24:
-            return "o";
-            break;
-        case 25:
-            return "p";
-            break;
-        case 26:
-            return "q";
-            break;
-        case 27:
-            return "r";
-            break;
-        case 28:
-            return "s";
-            break;    
-        case 29:
-            return "t";
-            break;
-        case 30:
-            return "u";
-            break;
-        case 31:
-            return "v";
-            break;
+char intToBase32(int decimalNum) {
+    if (32 > decimalNum) {
+        return getMarkFor32Base(decimalNum);
     }
+    char leftCh = getMarkFor32Base(decimalNum/32);
+    char rightCh = getMarkFor32Base(decimalNum%32);
+    strcat(leftCh, rightCh);
+    return leftCh;
+}
+
+char getMarkFor32Base(int index) {
+    return "!@#$%^&*<>abcdefghijklmnopqrstuv"[index];
 }

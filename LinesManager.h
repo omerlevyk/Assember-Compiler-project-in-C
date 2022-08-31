@@ -1,5 +1,8 @@
+#ifndef LINES MANAGER.H
+#define LINES MANAGER.H
+
 #include "globalFun.h"
-#include "secondRun.h"
+
 
 /**
  * @brief LoadFile - Load file from path 
@@ -39,14 +42,6 @@ void addNewNode(LineNode* head, char* Content);
  * @param next - the next node in the lines linked list.
  */
 void DeleteAllLines(LineNode* head);
-
-/**
- * @brief closeAllSystems - delete all left pointers at the end of the program.
- * 
- * @param currentSymbol - the current node in the table linked list.
- * @param NextSymbol - the next node in the table linked list.
- */
-void closeAllSystems(LineNode* head, LineNode* binHead);
 
 /**
  * @brief GetFileLength - get the number of lines in the node list (originally from a file).
@@ -103,20 +98,22 @@ LineNode* InsertLinesSection(LineNode* head, LineNode* section, int insertAt);
  * 
  * @param strLine - holds the word as a char.
  * 
- * @returnTRUE if found,
- * @returnFALSE otherwise.
+ * @return true if found,
+ * @return false otherwise.
  */
 bool getWord(LineNode* current, int wordLoc, char* ch);
 /**
  * @brief getLineFromPoint - gets the line from a choosen loc
  * 
- * @returnTRUE if found,
- * @returnFALSE otherwise.
+ * @return true if found,
+ * @return false otherwise.
  */
 bool getLineFromPoint(LineNode* current, int wordLoc, char* strLine);
 
 /**
- * @brief getErroDescription - a switch case function that fprintf the Error Description. 
+ * @brief getErrorDescription - a switch case function that fprintf the Error Description. 
  * 
  */
 void getErrorDescription(LineNode* head, LineNode* current, char* ch, int errNum);
+
+#endif

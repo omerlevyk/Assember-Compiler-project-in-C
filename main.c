@@ -1,10 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "globalFun.h"
+#include "LinesManager.h"
 #include "macroManager.h"
 #include "firstRun.h"
+#include "secondRun.h"
+#include "filesOutput.h"
 
-bool is_success = TRUE; /*error tracker*/
+#include "LinesManager.c"
+#include "macroManager.c"
+#include "firstRun.c"
+#include "secondRun.c"
+#include "filesOutput.c"
+
+
+LineNode* compilerRun(LineNode* head);
+
 
 int main(int argc, const char* argv[]) {   
     LineNode* head = NULL;
@@ -20,8 +32,8 @@ int main(int argc, const char* argv[]) {
 }
 
 LineNode* compilerRun(LineNode* head) {
-    is_success = firstRun(head);
-    if (TRUE == is_success) {
+    bool is_success = firstRun(head);
+    if (true == is_success) {
         LineNode* binHead;
 	    binHead = secondRun(head);
 

@@ -1,5 +1,7 @@
-#include "globalFun.h"
-#include "LinesManager.h" 
+#ifndef MACRO MANAGER.H
+#define MACRO MANAGER.H
+
+#include "LinesManager.h"
 
 
 /**
@@ -12,8 +14,8 @@
  * @param macroNames - a char that saved the names of the macros.
  * @param macros - saved the macro definition.
  * 
- * @returnTRUE - if this stage is success and the program can continue the the next stage.
- * @returnFALSE - if this stage have failed and the program needs to stop.
+ * @return true - if this stage is success and the program can continue the the next stage.
+ * @return false - if this stage have failed and the program needs to stop.
  */
 bool macroManager(LineNode* head); /* pre-run*/
 
@@ -48,3 +50,5 @@ char* getMacroCallName(char* lineContent);
  *  @return int index in the local arrays of this macro definition.
  */
 int getMacroIndex(char* macroName);
+
+#endif

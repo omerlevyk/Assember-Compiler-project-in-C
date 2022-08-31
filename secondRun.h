@@ -1,5 +1,6 @@
-#include "globalFun.h"
-#include "LinesManager.h"
+#ifndef SECOND RUN.H
+#define SECOND RUN.H 
+
 #include "firstRun.h" 
 
 /**
@@ -14,13 +15,21 @@
 LineNode* secondRun(LineNode* head);
 
 /**
+ * @brief closeAllSystems - delete all left pointers at the end of the program.
+ * 
+ * @param currentSymbol - the current node in the table linked list.
+ * @param NextSymbol - the next node in the table linked list.
+ */
+void closeAllSystems(LineNode* head, LineNode* binHead);
+
+/**
  * @brief addSymbolAsEntry - adds a new node to the symbol table and mark as '.Entry'.
  * 
  * @param currentSymbol - the current node in the table linked list.
  * 
  * @param keyWord - the current word the function is checking. 
- * @returnTRUE if success.
- * @returnFALSE if failed.
+ * @return true if success.
+ * @return false if failed.
  */
 bool addSymbolAsEntry(LineNode* head, LineNode* current);
 
@@ -101,7 +110,14 @@ void decimalToBinary(char* binNum, int num, int length);
 void negIntToBin(char* binNum, int num, int length);
 
 /**
- * @brief convert a number form decimal base to base 32.
+ * @brief convert a number from binChar to decimal and send it to intToBase32().
+ * 
+ * @return char the number as base 32.
+ */
+char BinCharToBase32(char* binaryNum);
+
+/**
+ * @brief convert a number from decimal base to base 32.
  * 
  * @param int firstLoc - holds the number in the first location.
  * @param int secondLoc - holds the number in the second location.
@@ -110,7 +126,7 @@ void negIntToBin(char* binNum, int num, int length);
  * 
  * @return char the combination of 'firstCh' and 'secondCh', both in 'firstCh'
  */
-char convertToBase32(int num);
+char intToBase32(int decimalNum);
 
 /**
  * @brief switch-case that get the sign For a givin int in 32 Base.
@@ -120,3 +136,5 @@ char convertToBase32(int num);
  * @return char representative  to num in base 32.
  */
 char getMarkFor32Base(int num);
+
+#endif

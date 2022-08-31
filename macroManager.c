@@ -35,7 +35,7 @@ bool macroManager(LineNode* head) {
         /* if the macro name is unrecognized*/
         if (-1 == macroIndex) {
             /* error: calling to an undefined macro*/
-            return FALSE;
+            return false;
         }
 
         LineNode* copiedMacro = CopyLines(macros[macroIndex]);
@@ -47,14 +47,14 @@ bool macroManager(LineNode* head) {
     }
     free(currentLine);
     deleteLocalArrays();
-    return TRUE;
+    return true;
 }
 
 
 void findMacros(LineNode* head) {
     LineNode* current = head;
     LineNode* prev = head;
-    char keyWord[] = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
+    char* keyWord = (char*)malloc(sizeof(char)*MAX_SIZE_CHAR);
     int line = 1, startLine, lineAmount;
 
     while (NULL != current) {

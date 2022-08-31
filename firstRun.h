@@ -1,4 +1,6 @@
-#include "globalFun.h"
+#ifndef FIRST RUN.H
+#define FIRST RUN.H 
+
 #include "LinesManager.h"
 
 
@@ -16,8 +18,8 @@ long DC = 0;
  * @param current - the current node in the lines linked list.
  * @param is_success - holds the bool value for if errors are founds.
  * 
- * @returnTRUE if no errors are found and the program can continue to the next stage.
- * @returnFALSE if errors are found and the program needs to stop.
+ * @return true if no errors are found and the program can continue to the next stage.
+ * @return false if errors are found and the program needs to stop.
  */
 bool firstRun(LineNode* head);
 
@@ -26,10 +28,23 @@ bool firstRun(LineNode* head);
  * 
  * @param keyWord - the current word the function is checking. 
  * 
- * @returnTRUE if success.
- * @returnFALSE if failed.
+ * @return true if success.
+ * @return false if failed.
  */
 bool isSymbol(LineNode* current);
+
+/**
+ * @brief checks if the line after a .struct is legal
+ * 
+ * @param keyWord - the first word the function is checking.
+ * @param keyWord - the second word the function is checking.
+ * @param head - the head node in the lines linked list.
+ * @param current  - the current node in the lines linked list.
+ * @param returnVal - holds the value the function needs to return.
+ * 
+ * @return returnVal. 
+ */
+bool checkAfterStruct (LineNode* head, LineNode* current);
 
 /**
  * @brief getRegister - checks if the keyword is a Register.
@@ -78,8 +93,8 @@ void addToMemory(LineNode* head, LineNode* current, int dataTypeNum);
  * @param keyWord - the current word the function is checking.
  * @param returnVal - holds the value the function needs to return.
  * 
- * @returnTRUE if Entry.
- * @returnFALSE else.
+ * @return true if Entry.
+ * @return false else.
  */
 bool isEntryGuidance(LineNode* current);
 /**
@@ -88,8 +103,8 @@ bool isEntryGuidance(LineNode* current);
  * @param keyWord - the current word the function is checking.
  * @param returnVal - holds the value the function needs to return.
  * 
- * @returnTRUE if external.
- * @returnFALSE else.
+ * @return true if external.
+ * @return false else.
  */
 bool isExternGuidance(LineNode* current);
 
@@ -98,8 +113,8 @@ bool isExternGuidance(LineNode* current);
  * 
  * @param currentSymbol - the current node in the table linked list.
  * 
- * @returnTRUE found that the label already exist.
- * @returnFALSE else.
+ * @return true found that the label already exist.
+ * @return false else.
  */
 bool checkLabel(symbolEntryNode* symbolHead, char* symbol);
 
@@ -111,8 +126,8 @@ bool checkLabel(symbolEntryNode* symbolHead, char* symbol);
  * @param flag - a checker if the function can add the symbol to the table. 
  * @param duplicateVal - check duplicates.
  *  
- * @returnTRUE if symbol to added to table.
- * @returnFALSE else.
+ * @return true if symbol to added to table.
+ * @return false else.
  */
 bool addToTable(LineNode* head, LineNode* current, int wordLoc);
 
@@ -213,10 +228,4 @@ int two_Operation_Operands(LineNode* head, LineNode* current, int opCodeNum, cha
  */
 int one_Operation_Operands(LineNode* head, LineNode* current, int opCodeNum, char* keyWord1);
 
-/**
- * @brief zero_Operation_Operands - check the validation of the operands of no keyWords.
- * 
- * @return 1.
- */
-int zero_Operation_Operands(LineNode* head, LineNode* current, int opCodeNum);
-
+#endif

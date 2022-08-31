@@ -1,3 +1,6 @@
+#ifndef GLOBAL FUN.H
+#define GLOBAL FUN.H
+
 #define MAX_SIZE_CHAR 256 /* max size of char*/
 #define MAX_LINE_LENGTH 128 /* max length of a single line*/
 #define IC_VALUE 100 /* the starting val of IC as per project instructions*/
@@ -10,8 +13,8 @@
 
 /* enum type for boolean*/
 typedef enum BOOL {
-    FALSE,
-    TRUE
+    false,
+    true
 } bool;
 
 /* a struct type for a linked list, each node conation a single line from the input file*/
@@ -74,3 +77,5 @@ typedef enum registers {
     r6 = 7,
     r7 = 8
 } registers;
+
+#endif
